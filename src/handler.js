@@ -24,15 +24,29 @@ const addBookHandler = (request, h) => {
     insertedAt, updatedAt,
   };
 
-  if (name !== undefined) {
-    if (readPage < pageCount) {
-      books.push(newBook);
-    }
-  }
+  books.push(newBook);
 
   const isSuccess = books.filter((book) => book.id === id).length > 0;
 
   if (isSuccess) {
+    if (name === undefined) {
+      const response = h.response({
+        status: 'fail',
+        message: 'Gagal menambahkan buku. Mohon isi nama buku',
+      });
+      response.code(400);
+      return response;
+    }
+
+    if (readPage > pageCount) {
+      const response = h.response({
+        status: 'fail',
+        message: 'Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount',
+      });
+      response.code(400);
+      return response;
+    }
+
     const response = h.response({
       status: 'success',
       message: 'Buku berhasil ditambahkan',
@@ -41,24 +55,6 @@ const addBookHandler = (request, h) => {
       },
     });
     response.code(201);
-    return response;
-  }
-
-  if (name === undefined) {
-    const response = h.response({
-      status: 'fail',
-      message: 'Gagal menambahkan buku. Mohon isi nama buku',
-    });
-    response.code(400);
-    return response;
-  }
-
-  if (readPage > pageCount) {
-    const response = h.response({
-      status: 'fail',
-      message: 'Gagal menambahkan buku. readPage tidak boleh lebih besar dari readCount',
-    });
-    response.code(400);
     return response;
   }
 
@@ -71,19 +67,16 @@ const addBookHandler = (request, h) => {
 };
 
 const getAllBooksHandler = (request, h) => {
-  const filterBooks = books.map(({
-    id,
-    name,
-    publisher,
-  }) => ({
-    id: id,
-    name: name,
-    publisher: publisher,
-  }));
   const response = h.response({
     status: 'success',
     data: {
-      books: filterBooks,
+      books: books.map(({
+        id, name, publisher
+      }) => ({
+        id: id,
+        name: name,
+        publisher: publisher
+      })) 
     },
   });
   response.code(200);
