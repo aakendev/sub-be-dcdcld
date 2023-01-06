@@ -1,3 +1,3 @@
-#Submission of Backend - Dicoding x Cloudeka
+# Submission of Backend - Dicoding x Cloudeka
 
-##Created by Aldy Rizky Putra
+## Created by Aldy Rizky Putra
